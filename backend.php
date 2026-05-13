@@ -2,8 +2,8 @@
 header('Content-Type: application/json; charset=UTF-8');
 
 $dbFile = __DIR__ . DIRECTORY_SEPARATOR . 'data.sqlite';
-$db = new SQLite3($dbFile);
-$db->exec('PRAGMA foreign_keys = ON');
+$db = new PDO('sqlite:' . $dbFile);
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $db->exec('CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,7 +14,7 @@ $db->exec('CREATE TABLE IF NOT EXISTS users (
   status TEXT
 )');
 
-$count = (int) $db->querySingle('SELECT COUNT(*) FROM users');
+$count = (int) $db->query('SELECT COUNT(*) FROM users')->fetchColumn();
 if ($count === 0) {
   $db->exec("INSERT INTO users (username, password, email, role, status) VALUES
     ('admin', 'supersecret123', 'admin@harbor.local', 'Owner', 'Active'),
@@ -39,7 +39,7 @@ if ($action === 'register') {
   }
 
   $checkSql = "SELECT id FROM users WHERE username = '$username' LIMIT 1";
-  $exists = $db->querySingle($checkSql);
+  $exists = $db->query($checkSql)->fetchColumn();
   if ($exists) {
     echo json_encode(['ok' => false, 'message' => 'Username already taken.']);
     exit;
@@ -69,12 +69,7 @@ if ($action === 'login') {
   }
 
   $sql = "SELECT id, username, email, role FROM users WHERE username = '$username' AND password = '$password'";
-  $result = $db->query($sql);
-  $rows = [];
-
-  while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-    $rows[] = $row;
-  }
+  $rows = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
   if (count($rows) === 0) {
     echo json_encode(['ok' => false, 'message' => 'Invalid username or password.']);

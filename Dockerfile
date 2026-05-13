@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends sqlite3 libsqlite3-dev \
   && docker-php-source extract \
-  && docker-php-ext-install pdo_sqlite sqlite3 \
+  && docker-php-ext-install pdo_sqlite \
   && docker-php-source delete \
   && rm -rf /var/lib/apt/lists/*
 
