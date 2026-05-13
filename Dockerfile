@@ -1,6 +1,6 @@
 FROM php:8.3-apache
 
-WORKDIR /app
+WORKDIR /var/www/html
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends sqlite3 libsqlite3-dev \
@@ -9,7 +9,7 @@ RUN apt-get update \
   && docker-php-source delete \
   && rm -rf /var/lib/apt/lists/*
 
-COPY index.html /app/index.html
-COPY backend.php /app/backend.php
+COPY index.html /var/www/html/index.html
+COPY backend.php /var/www/html/backend.php
 
 EXPOSE 80
