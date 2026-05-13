@@ -12,4 +12,7 @@ RUN apt-get update \
 COPY index.html /var/www/html/index.html
 COPY backend.php /var/www/html/backend.php
 
+RUN mkdir -p /var/www/html/data \
+  && chown -R www-data:www-data /var/www/html
+
 EXPOSE 80

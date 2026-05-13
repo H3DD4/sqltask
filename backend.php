@@ -1,7 +1,11 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
 
-$dbFile = __DIR__ . DIRECTORY_SEPARATOR . 'data.sqlite';
+$dbDir = __DIR__ . DIRECTORY_SEPARATOR . 'data';
+if (!is_dir($dbDir)) {
+  mkdir($dbDir, 0777, true);
+}
+$dbFile = $dbDir . DIRECTORY_SEPARATOR . 'data.sqlite';
 $db = new PDO('sqlite:' . $dbFile);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

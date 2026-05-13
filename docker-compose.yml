@@ -4,4 +4,4 @@ services:
     ports:
       - "4444:80"
     volumes:
-      - ./data.sqlite:/var/www/html/data.sqlite
+      - ./data:/var/www/html/data
