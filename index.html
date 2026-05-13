@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Harbor Account</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Georgia", "Times New Roman", serif; font-size: 14px; background: #f6f4f1; color: #1f1d1a; display: flex; justify-content: center; padding: 2.5rem 1rem; min-height: 100vh; }
+    .app { width: 100%; max-width: 520px; }
+    h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: #2a2420; }
+    .subtitle { font-size: 13px; color: #6f6359; margin-bottom: 1.2rem; }
+    .tabs { display: flex; border: 1px solid #d8d1c9; border-radius: 10px; overflow: hidden; margin-bottom: 1.2rem; background: #f7f2ed; }
+    .tab { flex: 1; padding: 10px 8px; text-align: center; cursor: pointer; background: transparent; font-size: 13px; color: #7a6f66; border: none; transition: background 0.15s; font-family: inherit; }
+    .tab.active { background: #ffffff; color: #2a2420; font-weight: 700; }
+    .card { background: #ffffff; border: 1px solid #e3dbd2; border-radius: 12px; padding: 1.2rem; box-shadow: 0 6px 20px rgba(55, 45, 38, 0.06); }
+    label { display: block; font-size: 11px; color: #7a6f66; margin-bottom: 4px; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    input { width: 100%; padding: 9px 12px; font-family: inherit; font-size: 14px; border: 1px solid #d6cdc4; border-radius: 8px; background: #faf8f6; color: #2a2420; outline: none; }
+    input:focus { border-color: #8f7f72; box-shadow: 0 0 0 2px rgba(143, 127, 114, 0.15); }
+    button.submit { margin-top: 14px; width: 100%; padding: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 8px; border: 1px solid #2a5f4f; background: #2f6f5b; color: #ffffff; transition: background 0.15s, border-color 0.15s; }
+    button.submit:hover { background: #2a5f4f; border-color: #244f42; }
+    .result { margin-top: 1rem; padding: 10px 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; background: #f1f5f2; color: #2f6f5b; border: 1px solid #cfe1d4; }
+    .result.error { background: #f8e9e9; color: #8a2d2d; border: 1px solid #e6c0c0; }
+
+    /* dashboard */
+    #dashboard { display: none; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #efe8e1; border: 1px solid #d6cdc4; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #6f6359; text-transform: uppercase; }
+    .welcome { font-size: 20px; font-weight: 700; color: #2a2420; margin-bottom: 2px; }
+    .welcome-sub { font-size: 12px; color: #7a6f66; margin-bottom: 1.2rem; }
+    .logout-btn { font-family: inherit; font-size: 12px; background: #f7f2ed; border: 1px solid #d6cdc4; color: #6f6359; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+    .logout-btn:hover { border-color: #bfb5aa; color: #5f544b; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
+    .stat { background: #ffffff; border: 1px solid #e3dbd2; border-radius: 10px; padding: 12px 14px; }
+    .stat-label { font-size: 10px; color: #8a7f76; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .stat-value { font-size: 20px; font-weight: 600; color: #2a2420; }
+    .feed { background: #ffffff; border: 1px solid #e3dbd2; border-radius: 10px; }
+    .feed-header { padding: 10px 14px; font-size: 11px; color: #8a7f76; border-bottom: 1px solid #f0ebe5; text-transform: uppercase; letter-spacing: 0.06em; }
+    .feed-item { padding: 10px 14px; border-bottom: 1px solid #f0ebe5; font-size: 12px; color: #6f6359; display: flex; gap: 10px; align-items: flex-start; }
+    .feed-item:last-child { border-bottom: none; }
+    .feed-dot { width: 6px; height: 6px; border-radius: 50%; background: #bfb5aa; margin-top: 4px; flex-shrink: 0; }
+    .feed-dot.green { background: #5aa37a; }
+    .feed-dot.red { background: #c16a6a; }
+    .feed-dot.yellow { background: #d1a85a; }
+    .panel { background: #ffffff; border: 1px solid #e3dbd2; border-radius: 10px; margin-bottom: 1.2rem; overflow: hidden; }
+    .panel-header { padding: 10px 14px; font-size: 11px; color: #8a7f76; border-bottom: 1px solid #f0ebe5; text-transform: uppercase; letter-spacing: 0.06em; background: #faf7f3; }
+    .table-wrap { overflow-x: auto; }
+    .directory-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .directory-table th, .directory-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #f0ebe5; }
+    .directory-table th { font-size: 10px; color: #8a7f76; text-transform: uppercase; letter-spacing: 0.06em; background: #faf7f3; }
+    .directory-table tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- AUTH -->
+  <div id="auth-screen">
+    <h2>Harbor Account</h2>
+    <p class="subtitle">Create an account or sign in to continue.</p>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('register')">Register</button>
+      <button class="tab" onclick="showTab('login')">Login</button>
+    </div>
+
+    <div id="tab-register" class="card">
+      <label>username</label>
+      <input id="reg-user" type="text" placeholder="Username" />
+      <label>password</label>
+      <input id="reg-pass" type="password" placeholder="Password" />
+      <button class="submit" onclick="doRegister()">Create account</button>
+      <div id="reg-result"></div>
+    </div>
+
+    <div id="tab-login" class="card" style="display:none">
+      <label>username</label>
+      <input id="login-user" type="text" placeholder="Username" />
+      <label>password</label>
+      <input id="login-pass" type="password" placeholder="Password" />
+      <button class="submit" onclick="doLogin()">Sign in</button>
+      <div id="login-result"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <div class="topbar">
+      <div class="avatar" id="dash-avatar"></div>
+      <button class="logout-btn" onclick="doLogout()">logout</button>
+    </div>
+    <div class="welcome" id="dash-welcome"></div>
+    <div class="welcome-sub" id="dash-sub"></div>
+    <div class="stats">
+      <div class="stat"><div class="stat-label">messages</div><div class="stat-value">24</div></div>
+      <div class="stat"><div class="stat-label">files</div><div class="stat-value">7</div></div>
+      <div class="stat"><div class="stat-label">projects</div><div class="stat-value">3</div></div>
+      <div class="stat"><div class="stat-label">alerts</div><div class="stat-value">1</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Team directory</div>
+      <div class="table-wrap">
+        <table class="directory-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody id="directory-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="feed">
+      <div class="feed-header">recent activity</div>
+      <div class="feed-item"><div class="feed-dot green"></div><div>New file uploaded - report_q4.pdf</div></div>
+      <div class="feed-item"><div class="feed-dot yellow"></div><div>Team meeting scheduled - Thursday 10:00</div></div>
+      <div class="feed-item"><div class="feed-dot red"></div><div>Password updated for your account</div></div>
+      <div class="feed-item"><div class="feed-dot green"></div><div>Backup completed successfully</div></div>
+    </div>
+  </div>
+
+</div>
+<script>
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showTab(name) {
+    ['register','login'].forEach((t,i) => {
+      document.getElementById('tab-'+t).style.display = t === name ? '' : 'none';
+      document.querySelectorAll('.tab')[i].classList.toggle('active', t === name);
+    });
+  }
+
+  function renderDirectory(rows) {
+    const body = document.getElementById('directory-body');
+    if (!body) return;
+    body.innerHTML = (rows || []).map(r => {
+      return `<tr><td>${esc(r.id)}</td><td>${esc(r.username)}</td><td>${esc(r.email)}</td><td>${esc(r.role)}</td></tr>`;
+    }).join('');
+  }
+
+  function buildFormData(action, data) {
+    const body = new URLSearchParams();
+    body.set('action', action);
+    Object.keys(data).forEach(key => body.set(key, data[key]));
+    return body;
+  }
+
+  async function postAction(action, data) {
+    const response = await fetch('backend.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: buildFormData(action, data).toString()
+    });
+    if (!response.ok) throw new Error('Request failed');
+    return response.json();
+  }
+
+  function doRegister() {
+    const u = document.getElementById('reg-user').value.trim();
+    const p = document.getElementById('reg-pass').value.trim();
+    const res = document.getElementById('reg-result');
+
+    if (!u || !p) { res.innerHTML = `<div class="result error">Please fill in both fields.</div>`; return; }
+
+    postAction('register', { username: u, password: p })
+      .then(payload => {
+        if (!payload.ok) {
+          res.innerHTML = `<div class="result error">${esc(payload.message || 'Unable to create account.')}</div>`;
+          return;
+        }
+        res.innerHTML = `<div class="result">Account created for '${esc(u)}'. You can sign in now.</div>`;
+      })
+      .catch(() => {
+        res.innerHTML = `<div class="result error">Unable to register right now.</div>`;
+      });
+  }
+
+  function doLogin() {
+    const u = document.getElementById('login-user').value;
+    const p = document.getElementById('login-pass').value;
+    const resultEl = document.getElementById('login-result');
+
+    postAction('login', { username: u, password: p })
+      .then(payload => {
+        if (!payload.ok) {
+          resultEl.innerHTML = `<div class="result error">${esc(payload.message || 'Invalid username or password.')}</div>`;
+          return;
+        }
+        const user = payload.user || { username: u };
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('dash-avatar').textContent = (user.username || 'U')[0];
+        document.getElementById('dash-welcome').textContent = `Welcome back, ${user.username}`;
+        document.getElementById('dash-sub').textContent = `Last login: today at ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+        renderDirectory(payload.rows || []);
+      })
+      .catch(() => {
+        resultEl.innerHTML = `<div class="result error">Unable to sign in right now.</div>`;
+      });
+  }
+
+  function doLogout() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'block';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-result').innerHTML = '';
+    document.getElementById('directory-body').innerHTML = '';
+  }
+</script>
+</body>
+</html>
